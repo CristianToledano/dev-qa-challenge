@@ -1,22 +1,35 @@
 import json
 
+def get_all_country_codes(items):
+    list_of_country_codes = []
+    for line in items:
+        country_code = line[:2]
+        if country_code not in list_of_country_codes:
+            list_of_country_codes.append(country_code)
+    return list_of_country_codes
+
+def generate_dict_with_list(list_of_country_codes):
+    country_dict = {}
+    for country in list_of_country_codes:
+        country_dict[country] = []
+    return country_dict
+
+def build_dict(items, country_dict):
+    for line in items:
+        country_code = line[:2]
+        country_dict[country_code].append(line.rstrip('\n'))
+    return country_dict
+
 def main():    
     # Open file
     file = open('random-iban-data.txt', 'r')
     lines = file.readlines()
-    iban_list = []
-    for line in lines:
-        country_code = line[:2]
-        iban_code = line[2:]
-        iban_dict = {country_code: iban_code}
-        # Control duplicateds codes
-        if iban_dict not in iban_list:
-            iban_list.append(iban_dict)
-    # sort list by country code
-    iban_list_sorted = sorted(iban_list, key=lambda d: list(d.keys()))
-    iban_json_codes = {'codes' : iban_list_sorted}
+    country_codes = get_all_country_codes(lines)
+    dict_list_country = generate_dict_with_list(country_codes)
+    final_dict = build_dict(lines, dict_list_country)
 
-    json_object = json.dumps(iban_json_codes, indent = 4)
+    sort_dictionary = dict(sorted(final_dict.items(), key=lambda item: item[1])) 
+    json_object = json.dumps(sort_dictionary, indent = 4)
   
     # Writing to sample.json
     with open("iban_codes.json", "w") as outfile:
@@ -26,3 +39,4 @@ def main():
     # import time
     # time.sleep(30000)
 main()
+
