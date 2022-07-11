@@ -28,7 +28,8 @@ def main():
     dict_list_country = generate_dict_with_list(country_codes)
     final_dict = build_dict(lines, dict_list_country)
 
-    sort_dictionary = dict(sorted(final_dict.items(), key=lambda item: item[1])) 
+    sort_dictionary = dict(sorted(final_dict.items(), key=lambda item: item[1]))
+    sort_dictionary.pop('\n', None)
     json_object = json.dumps(sort_dictionary, indent = 4)
   
     # Writing to sample.json
@@ -39,4 +40,3 @@ def main():
     # import time
     # time.sleep(30000)
 main()
-
